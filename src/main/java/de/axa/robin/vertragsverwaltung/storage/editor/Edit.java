@@ -17,13 +17,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Edit {
-    ////Klassen einlesen////
-    private Output output = new Output();
+    /// /Klassen einlesen////
+    private final Output output;
     private final Input input;
     private final Setup setup = new Setup();
-    private Vertragsverwaltung vertragsverwaltung;
+    private final Vertragsverwaltung vertragsverwaltung;
     private final AdressValidator addressAdressValidator = new AdressValidator();
-
     public Edit(Input input, Vertragsverwaltung vertragsverwaltung, Output output) {
         this.input = input;
         this.vertragsverwaltung = vertragsverwaltung;
@@ -179,6 +178,7 @@ public class Edit {
                 case 1:
                     int vsnr = input.getNumber(Integer.class, "8-stellige VSNR oder 0 zum abbrechen", -1, -1, -1, true);
                     if (vsnr != 0) {
+                        if (vertragsverwaltung.getVertrag(vsnr) == null) return;
                         editVertrag(vertragsverwaltung.getVertrag(vsnr));
                     }
                     return;

@@ -7,11 +7,13 @@ import de.axa.robin.vertragsverwaltung.storage.editor.Delete;
 import de.axa.robin.vertragsverwaltung.storage.editor.Edit;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Menu {
     ////Klassen einlesen////
     private Output output = new Output();
-    private Input input;
+    private final Scanner scanner = new Scanner(System.in);
+    private Input input = new Input(scanner);
     private Delete delete = new Delete(input);
     private Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
     private Create create = new Create(input, vertragsverwaltung, output);
@@ -21,16 +23,8 @@ public class Menu {
         this.input = input;
     }
 
-    public Output getOutput() {
-        return output;
-    }
-
     public void setOutput(Output output) {
         this.output = output;
-    }
-
-    public Input getInput() {
-        return input;
     }
 
     public void setInput(Input input) {
@@ -41,20 +35,12 @@ public class Menu {
         this.delete = delete;
     }
 
-    public Create getCreate() {
-        return create;
-    }
-
     public void setCreate(Create create) {
         this.create = create;
     }
 
     public void setEdit(Edit edit) {
         this.edit = edit;
-    }
-
-    public Vertragsverwaltung getVertragsverwaltung() {
-        return vertragsverwaltung;
     }
 
     public void setVertragsverwaltung(Vertragsverwaltung vertragsverwaltung) {
