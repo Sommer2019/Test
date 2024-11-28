@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Vertragsverwaltung</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 <body>
 
@@ -12,6 +13,9 @@
     <h3>Alle Verträge:</h3>
     <a href="/printVertrage">
         <button>Alle Verträge anzeigen</button>
+    </a>
+    <a href="/editPreis">
+        <button>Preise neu berechnen</button>
     </a>
     <h3>Neuer Vertrag</h3>
     <a href="/createVertrag">

@@ -22,7 +22,13 @@ function getMinBirth() {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+function toggleDelete() {
+    document.getElementById('delete-container').style.display = 'block';
+}
 
+function hideDelete() {
+    document.getElementById('delete-container').style.display = 'none';
+}
 // Setze das heutige Datum als Wert und Mindestdatum für das Datumseingabefeld
 const todayDate = getTodayDate();
 const minbirth = getMinBirth();
@@ -43,6 +49,11 @@ const regexName = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñ�
 const regexTyp = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$/;
 const regexPLZ = /^\d{5}$/;
 const regexHausnummer = /^\d+[a-zA-Z]?$/;
+document.getElementById('calculatePrice').addEventListener('click', function() {
+var form = document.getElementById('myForm'); var formData = new FormData(form);
+fetch('/createPreis', { method: 'POST', body: formData }) .then(response => response.json()) .then(data => {
+document.getElementById('preis').textContent = data.preis; }) .catch(error => { console.error('Fehler:', error);
+alert('Es gab einen Fehler bei der Berechnung des Preises.'); }); });
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('myForm');
     const calculateButton = document.getElementById('calculateButton');
@@ -69,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 });
-
 function validateInputHersteller(input, messageElement) {
     fetch('brands.json')
         .then(response => response.json())

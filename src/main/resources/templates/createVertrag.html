@@ -1,55 +1,10 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vertrag erstellen</title>
-    <style>
-        .invalid {
-            border-color: red;
-        }
-
-        .valid {
-            border-color: green;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 0.9em;
-        }
-
-        .form-group {
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 10px; /* Fügt eine Leerzeile nach jedem Eingabefeld hinzu */
-        }
-
-        label {
-            text-align: right;
-            padding-right: 10px;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="number"] {
-            width: 200px; /* Hier kannst du die Breite anpassen */
-        }
-
-        .speed-group {
-            display: flex;
-            align-items: center;
-        }
-
-        .speed-group input {
-            width: 100px; /* Breite des Eingabefelds für Höchstgeschwindigkeit */
-        }
-
-        .speed-group span {
-            margin-left: 5px; /* Abstand zwischen Eingabefeld und "km/h" */
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 <body>
 <h1><strong>Vertrag </strong> <span th:if="${vsnr}" th:text="${vsnr}"></span></h1>
@@ -58,6 +13,9 @@
     <input type="submit" id="calculateButton" value="Erstellen">
     <p></p>
     <h2>Vertragsdaten</h2>
+    <div class="form-group"><label>Preisvorberechnung: </label>
+        <button type="button" id="calculatePrice"> <p id="preis"> --,-- € </p> </button>
+    </div>
     <div class="form-group">
         <label>Abrechnungszeitraum:</label>
         <div>
@@ -84,17 +42,14 @@
     <div class="form-group">
         <label for="kennzeichen">Amtliches Kennzeichen:</label>
         <input th:field="*{kennzeichen}" type="text" id="kennzeichen" required>
-        <span id="kennzeichen-message" class="error-message"></span>
     </div>
     <div class="form-group">
         <label for="hersteller">Hersteller:</label>
         <input th:field="*{hersteller}" type="text" id="hersteller" required>
-        <span id="hersteller-message" class="error-message"></span>
     </div>
     <div class="form-group">
         <label for="typ">Typ:</label>
         <input th:field="*{typ}" type="text" id="typ" required>
-        <span id="typ-message" class="error-message"></span>
     </div>
     <div class="form-group">
         <label for="speed">Höchstgeschwindigkeit:</label>
@@ -112,12 +67,10 @@
     <div class="form-group">
         <label for="vorname">Vorname:</label>
         <input th:field="*{vorname}" name="vorname" type="text" id="vorname" required>
-        <span id="vorname-message" class="error-message"></span>
     </div>
     <div class="form-group">
         <label for="nachname">Nachname:</label>
         <input th:field="*{nachname}" type="text" id="nachname" required>
-        <span id="nachname-message" class="error-message"></span>
     </div>
     <div class="form-group">
         <label>Geschlecht:</label>
@@ -141,12 +94,10 @@
     <div class="form-group">
         <label for="hausnummer">Hausnummer:</label>
         <input th:field="*{hausnummer}" type="text" id="hausnummer" required>
-        <span id="hausnummer-message" class="error-message"></span>
     </div>
     <div class="form-group">
         <label for="plz">PLZ:</label>
         <input th:field="*{plz}" type="text" id="plz" required>
-        <span id="plz-message" class="error-message"></span>
     </div>
     <div class="form-group">
         <label for="stadt">Stadt:</label>

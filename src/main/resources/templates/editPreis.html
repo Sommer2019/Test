@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Preise neu berechnen</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+<h1>Preisanpassung</h1>
+<p></p>
+<form id="myForm" th:action="@{/editPreis}" th:object="${preisdto}" th:method="post">
+    <input type="submit" id="calculateButton" value="Erstellen">
+    <p></p>
+    <h2>Vertragsdaten</h2>
+    <div class="form-group"><label>Einnahmenvorberechnung: </label>
+        <button type="button" id="calculateallPrice"><p id="preis"> --,-- € </p></button>
+    </div>
+    <div class="form-group">
+        <label for="faktor">allgemeiner Faktor:</label>
+        <input th:field="*{faktor}" step="0.01" type="number" id="faktor" min="0" max="10" required>
+    </div>
+    <div class="form-group">
+        <label for="age">Altersfaktor:</label>
+        <input th:field="*{age}" step="0.01" type="number" id="age" min="0" max="10" required>
+    </div>
+    <div class="form-group">
+        <label for="speed">Höchstgeschwindigkeitsfaktor:</label>
+        <input th:field="*{speed}" step="0.01" type="number" id="speed" min="0" max="10" required>
+    </div>
+    <p></p>
+</form>
+<p></p>
+<a href="/">
+    <button>Zurück</button>
+</a>
+<script>
+    document.getElementById('calculateallPrice').addEventListener('click', function() {
+    var form = document.getElementById('myForm'); var formData = new FormData(form);
+    fetch('/precalcPreis', { method: 'POST', body: formData }) .then(response => response.json()) .then(data => {
+    document.getElementById('preis').textContent = data.preis; }) .catch(error => { console.error('Fehler:', error);
+    alert('Es gab einen Fehler bei der Berechnung des Preises.'); }); });
+</script>
+</body>
+</html>

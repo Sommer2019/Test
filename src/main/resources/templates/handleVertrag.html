@@ -1,35 +1,11 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vertrag</title>
-    <script>
-        function toggleDelete() {
-            document.getElementById('delete-container').style.display = 'block';
-        }
-
-        function hideDelete() {
-            document.getElementById('delete-container').style.display = 'none';
-        }
-    </script>
-    <style>
-        .vertrag-details {
-            display: table;
-            width: 100%;
-        }
-        .vertrag-details div {
-            display: table-row;
-        }
-        .vertrag-details div span {
-            display: table-cell;
-            padding: 5px 10px;
-        }
-        .vertrag-details div span:first-child {
-            font-weight: bold;
-            width: 200px; /* Adjust this width as needed */
-        }
-    </style>
+    <script type="text/javascript" th:src="@{/js/createVertrag.js}"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 <body>
 <h1><strong>Vertrag </strong> <span th:text="${vsnr}"></span></h1>

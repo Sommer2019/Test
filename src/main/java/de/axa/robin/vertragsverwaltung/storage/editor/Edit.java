@@ -201,7 +201,9 @@ public class Edit {
         double factoralter = input.getNumber(Double.class, "", -1, -1, -1, false);
         output.create("den neuen Geschwindigkeitsfaktor");
         double factorspeed = input.getNumber(Double.class, "", -1, -1, -1, false);
-
+        recalcpricerun(factor,factoralter,factorspeed,vertrage);
+    }
+    public BigDecimal recalcpricerun(double factor, double factoralter, double factorspeed, List<Vertrag> vertrage) {
         JsonObject jsonObject = Json.createObjectBuilder()
                 .add("factor", factor)
                 .add("factorage", factoralter)
@@ -223,5 +225,6 @@ public class Edit {
             }
         }
         output.sum("Neue", summe);
+        return summe;
     }
 }
