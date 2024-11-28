@@ -18,8 +18,9 @@
         <details open>
             <summary><b>Vertragsdaten</b></summary>
             <div class="vertrag-details">
-                <div><span>Preis:</span><span th:text="${vertrag.preis} + ' €'"></span></div>
-                <div><span>Abrechnungszeitraum:</span><span th:text="${vertrag.monatlich ? 'monatlich' : 'jährlich'}"></span></div>
+                <div><span>Preis:</span><span th:text="${vertrag.formattedPreis} + ' €'"></span></div>
+                <div><span>Abrechnungszeitraum:</span><span
+                        th:text="${vertrag.monatlich ? 'monatlich' : 'jährlich'}"></span></div>
                 <div><span>Versicherungsbeginn:</span><span th:text="${vertrag.versicherungsbeginn}"></span></div>
                 <div><span>Versicherungsablauf:</span><span th:text="${vertrag.versicherungsablauf}"></span></div>
                 <div><span>Antragsdatum:</span><span th:text="${vertrag.antragsDatum}"></span></div>
@@ -29,10 +30,12 @@
         <details open>
             <summary><b>Fahrzeugdaten:</b></summary>
             <div class="vertrag-details">
-                <div><span>Amtliches Kennzeichen:</span><span th:text="${vertrag.fahrzeug.amtlichesKennzeichen}"></span></div>
+                <div><span>Amtliches Kennzeichen:</span><span th:text="${vertrag.fahrzeug.amtlichesKennzeichen}"></span>
+                </div>
                 <div><span>Hersteller:</span><span th:text="${vertrag.fahrzeug.hersteller}"></span></div>
                 <div><span>Typ:</span><span th:text="${vertrag.fahrzeug.typ}"></span></div>
-                <div><span>Höchstgeschwindigkeit:</span><span th:text="${vertrag.fahrzeug.hoechstgeschwindigkeit}"></span></div>
+                <div><span>Höchstgeschwindigkeit:</span><span
+                        th:text="${vertrag.fahrzeug.hoechstgeschwindigkeit}"></span></div>
                 <div><span>Wagnisskennziffer:</span><span th:text="${vertrag.fahrzeug.wagnisskennziffer}"></span></div>
             </div>
             <p></p>

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 
@@ -38,6 +40,8 @@ public class MenuSpring {
 
     @GetMapping("/printVertrage")
     public String showAll(Model model) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMANY);
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", symbols);
         vertrage = vertragsverwaltung.getVertrage();
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
@@ -46,6 +50,7 @@ public class MenuSpring {
             } else {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
             }
+            v.setFormattedPreis(decimalFormat.format(v.getPreis()));
         }
         model.addAttribute("vertrage", vertrage);
         model.addAttribute("preis", summe);
@@ -97,7 +102,7 @@ public class MenuSpring {
             @ModelAttribute PreisDTO preisDTO,
             Model model) {
         BigDecimal preis = edit.recalcpricerun(preisDTO.getFaktor(), preisDTO.getAge(), preisDTO.getSpeed(), vertrage);
-        String confirm = "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN) + "€ pro Jahr";
+        String confirm = "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + "€ pro Jahr";
         model.addAttribute("confirm", confirm);
         return "index";
     }
@@ -145,7 +150,7 @@ public class MenuSpring {
         Vertrag vertrag = new Vertrag(vsnr, monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
         vertragsverwaltung.vertragAnlegen(vertrag);
 
-        String confirm = "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + preis + "€";
+        String confirm = "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + String.valueOf(preis).replace('.', ',') + "€";
         model.addAttribute("confirm", confirm);
         return "index";
     }
@@ -168,7 +173,7 @@ public class MenuSpring {
             return "index";
         }
         model.addAttribute("vsnr", VSNR);
-        model.addAttribute("preis", v.getPreis());
+        model.addAttribute("preis", String.valueOf(v.getPreis()).replace('.', ','));
         model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
         model.addAttribute("versicherungsbeginn", v.getVersicherungsbeginn());
         model.addAttribute("versicherungsablauf", v.getVersicherungsablauf());

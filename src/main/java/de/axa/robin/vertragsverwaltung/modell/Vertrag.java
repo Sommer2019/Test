@@ -19,6 +19,7 @@ public class Vertrag {
     private final Create create = new Create(input, vertragsverwaltung, output);
     private int vsnr;
     private double preis;
+    private String formattedPreis;
     boolean monatlich;
     private LocalDate versicherungsbeginn;
     private LocalDate versicherungsablauf;
@@ -104,6 +105,13 @@ public class Vertrag {
 
     public void setPartner(Partner partner) {
         this.partner = partner;
+    }
+    public String getFormattedPreis() {
+        return formattedPreis;
+    }
+
+    public void setFormattedPreis(String formattedPreis) {
+        this.formattedPreis = formattedPreis;
     }
 
     @Override
