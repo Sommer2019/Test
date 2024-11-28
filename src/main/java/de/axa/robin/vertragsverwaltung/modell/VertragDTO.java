@@ -7,8 +7,6 @@ public class VertragDTO {
     private LocalDate start;
     private LocalDate end;
     private LocalDate create;
-    private BigDecimal preis;
-    private String formattedPreis;
     private String abrechnung;
     private String kennzeichen;
     private String hersteller;
@@ -176,21 +174,5 @@ public class VertragDTO {
 
     public void setLand(String land) {
         this.land = land;
-    }
-
-    public BigDecimal getPreis() {
-        return preis;
-    }
-
-    public void setPreis(BigDecimal preis) {
-        this.preis = preis;
-    }
-
-    public String getFormattedPreis() {
-        return formattedPreis;
-    }
-
-    public void setFormattedPreis(String formattedPreis) {
-        this.formattedPreis = formattedPreis;
     }
 }

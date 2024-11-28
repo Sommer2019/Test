@@ -179,6 +179,25 @@ function checkKennzeichen(input, regex) {
         input.classList.add('invalid');
     }
 }
+function toggleEdit() {
+    var handledVertrag = document.getElementById("handledVertrag");
+    var inputs = handledVertrag.querySelectorAll("input, label, #preiscalc, #kmh");
+    inputs.forEach(function(input) {
+        if (input.style.display === "inline-block") {
+            input.style.display = "none";
+        } else {
+            input.style.display = "inline-block";
+        }
+    });
+
+    // Hide the delete button when Bearbeiten is clicked
+    var deleteButton = document.getElementById("delete");
+    if (deleteButton.style.display === "none") {
+        deleteButton.style.display = "inline-block";
+    } else {
+        deleteButton.style.display = "none";
+    }
+}
 
 // Initiale Einstellung der Mindest- und Höchstwerte basierend auf dem heutigen Datum
 startInput.value = todayDate;

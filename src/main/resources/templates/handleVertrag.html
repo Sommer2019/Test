@@ -6,11 +6,25 @@
     <title>Vertrag</title>
     <script type="text/javascript" th:src="@{/js/script.js}"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <style>
+        input {
+            display: none; /* Hide all input fields */
+        }
+        label {
+            display: none; /* Hide all label fields */
+        }
+        #kmh {
+            display: none; /* Hide km/h */
+        }
+        #preiscalc {
+            display: none; /* Hide calculate price button */
+        }
+    </style>
 </head>
 <body>
 <h1><strong>Vertrag </strong> <span th:text="${vsnr}"></span></h1>
-<button>Bearbeiten</button>
-<button onclick="toggleDelete()">Löschen</button>
+<button type="button" onclick="toggleEdit()">Bearbeiten</button>
+<button onclick="toggleDelete()" id="delete">Löschen</button>
 <p></p>
 <div id="delete-container" style="display: none;">
     <p>Möchten Sie diesen Vertrag wirklich löschen?</p>
@@ -22,46 +36,80 @@
     </div>
     <p></p>
 </div>
+<div id="handledVertrag" style="display: inline-block; vertical-align: top;" hidden>
 <details open>
     <summary><b>Vertragsdaten</b></summary>
     <div class="vertrag-details">
-        <div><span>Preis:</span><span th:text="${preis} + ' €'"></span></div>
-        <div><span>Abrechnungszeitraum:</span><span th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span></div>
-        <div><span>Versicherungsbeginn:</span><span th:text="${versicherungsbeginn}"></span></div>
-        <div><span>Versicherungsablauf:</span><span th:text="${versicherungsablauf}"></span></div>
-        <div><span>Antragsdatum:</span><span th:text="${antragsdatum}"></span></div>
+        <div><span>Preis:</span><span th:text="${preis} + ' €'"></span><label>Preisvorberechnung: </label>
+            <div id="preiscalc"><button type="button" id="calculatePrice"> <p id="preis"> --,-- € </p> </button></div></div>
+        <div><span>Abrechnungszeitraum:</span><span th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span> <label></label>
+                <input  type="radio" name="abrechnung" value="true" id="check1">
+                <label for="check1">monatlich</label>
+                <input  type="radio" name="abrechnung" value="false" id="check2">
+                <label for="check2">jährlich</label>
+            </div>
+        <div><span>Versicherungsbeginn:</span><span th:text="${versicherungsbeginn}"></span><label for="start"></label>
+            <input  type="date" id="start" name="start" max="9998-12-31" required></div>
+        <div><span>Versicherungsablauf:</span><span th:text="${versicherungsablauf}"></span><label for="end"></label>
+            <input  type="date" id="end" max="9999-12-31" required></div>
+        <div><span>Antragsdatum:</span><span th:text="${antragsdatum}"></span><label for="create"></label>
+            <input  type="date" id="create" max="9998-12-31" required></div>
     </div>
 </details>
 <p></p>
 <details open>
     <summary><b>Fahrzeugdaten:</b></summary>
     <div class="vertrag-details">
-        <div><span>Amtliches Kennzeichen:</span><span th:text="${kennzeichen}"></span></div>
-        <div><span>Hersteller:</span><span th:text="${hersteller}"></span></div>
-        <div><span>Typ:</span><span th:text="${typ}"></span></div>
-        <div><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span></div>
-        <div><span>Wagnisskennziffer:</span><span th:text="${wkz}"></span></div>
+        <div><span>Amtliches Kennzeichen:</span><span th:text="${kennzeichen}"></span><label for="kennzeichen"></label>
+            <input  type="text" id="kennzeichen" required></div>
+        <div><span>Hersteller:</span><span th:text="${hersteller}"></span><label for="hersteller"></label>
+            <input  type="text" id="hersteller" required></div>
+        <div><span>Typ:</span><span th:text="${typ}"></span><label for="typ"></label>
+            <input  type="text" id="typ" required></div>
+        <div><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span><label for="speed"></label>
+            <div class="speed-group">
+                <input  type="number" id="speed" min="45" max="250" required>
+                <span id="kmh" >km/h</span>
+            </div></div>
+        <div><span>Wagnisskennziffer:</span><span th:text="${wkz}"></span><label for="wkz"></label>
+            <input  type="number" id="wkz" min="112" max="112" required></div>
     </div>
 </details>
 <p></p>
 <details open>
     <summary><b>Partnerdaten:</b></summary>
     <div class="vertrag-details">
-        <div><span>Vorname:</span><span th:text="${vorname}"></span></div>
-        <div><span>Nachname:</span><span th:text="${nachname}"></span></div>
-        <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span></div>
-        <div><span>Geburtsdatum:</span><span th:text="${geburtsdatum}"></span></div>
-        <div><span>Straße:</span><span th:text="${strasse}"></span></div>
-        <div><span>Hausnummer:</span><span th:text="${hausnummer}"></span></div>
-        <div><span>PLZ:</span><span th:text="${plz}"></span></div>
-        <div><span>Stadt:</span><span th:text="${stadt}"></span></div>
-        <div><span>Bundesland:</span><span th:text="${bundesland}"></span></div>
-        <div><span>Land:</span><span th:text="${land}"></span></div>
+        <div><span>Vorname:</span><span th:text="${vorname}"></span><label for="vorname"></label>
+            <input  name="vorname" type="text" id="vorname" required></div>
+        <div><span>Nachname:</span><span th:text="${nachname}"></span><label for="nachname"></label>
+            <input  type="text" id="nachname" required></div>
+        <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span><input  type="radio" name="gender" value="M" id="check3">
+            <label for="check3">M</label>
+            <input  type="radio" name="gender" value="W" id="check4">
+            <label for="check4">W</label>
+            <input  type="radio" name="gender" value="D" id="check5">
+            <label for="check5">D</label></div>
+        <div><span>Geburtsdatum:</span><span th:text="${geburtsdatum}"></span><label for="birth"></label>
+            <input  type="date" id="birth" required></div>
+        <div><span>Straße:</span><span th:text="${strasse}"></span><label for="strasse"></label>
+            <input  type="text" id="strasse" required></div>
+        <div><span>Hausnummer:</span><span th:text="${hausnummer}"></span><label for="hausnummer"></label>
+            <input  type="text" id="hausnummer" required></div>
+        <div><span>PLZ:</span><span th:text="${plz}"></span><label for="plz"></label>
+            <input  type="text" id="plz" required></div>
+        <div><span>Stadt:</span><span th:text="${stadt}"></span><label for="stadt"></label>
+            <input  type="text" id="stadt" required></div>
+        <div><span>Bundesland:</span><span th:text="${bundesland}"></span><label for="bundesland"></label>
+            <input  type="text" id="bundesland" required></div>
+        <div><span>Land:</span><span th:text="${land}"></span><label for="land"></label>
+            <input  type="text" id="land"  value="Deutschland" readonly></div>
     </div>
 </details>
+</div>
 <p></p>
 <a href="/">
     <button>Zurück</button>
 </a>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>
 </html>
