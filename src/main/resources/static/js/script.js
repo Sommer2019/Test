@@ -24,6 +24,8 @@ function getMinBirth() {
 }
 function toggleDelete() {
     document.getElementById('delete-container').style.display = 'block';
+// Hide the delete button
+var deleteButton = document.getElementById("delete"); if (deleteButton.style.display === none") deleteButton.style.display inline-block' else ~ deleteButton.style.display = "none
 }
 
 function hideDelete() {
