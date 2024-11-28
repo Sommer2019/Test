@@ -140,7 +140,7 @@ public class MenuSpring {
         Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), PLZ, vertragdto.getStadt(), vertragdto.getBundesland());
         Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
         double preis = creator.createPreis(monatlich, partner, fahrzeug);
-        Vertrag vertrag = new Vertrag(getVsnr(), monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
+        Vertrag vertrag = new Vertrag(create.createvsnr(), monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
         vertragsverwaltung.vertragAnlegen(vertrag);
 
         String confirm = "Vertrag erfolgreich erstellt! Preis: " + preis + "€";
