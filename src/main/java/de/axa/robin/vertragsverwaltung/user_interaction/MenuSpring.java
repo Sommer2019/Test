@@ -29,6 +29,7 @@ public class MenuSpring {
     private final Edit edit = new Edit(input, vertragsverwaltung, output);
     private final Create create = new Create(input, vertragsverwaltung, output);
     private List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
+
     public int getVsnr() {
         return vsnr;
     }
@@ -69,6 +70,7 @@ public class MenuSpring {
         model.addAttribute("preisdto", preisDTO);
         return "editPreis";
     }
+
     @PostMapping("/precalcPreis")
     @ResponseBody
     public Map<String, Object> editPreis(@ModelAttribute PreisDTO preisDTO) {
@@ -83,10 +85,10 @@ public class MenuSpring {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        BigDecimal preis = edit.recalcpricerun(preisDTO.getFaktor(),preisDTO.getAge(), preisDTO.getSpeed(), vertrage);
+        BigDecimal preis = edit.recalcpricerun(preisDTO.getFaktor(), preisDTO.getAge(), preisDTO.getSpeed(), vertrage);
         Map<String, Object> response = new HashMap<>();
-        response.put("preis", preis.setScale(2, RoundingMode.HALF_DOWN) + " €");
-        edit.recalcpricerun(factor,factoralter, factorspeed, vertrage);
+        response.put("preis", preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + " €");
+        edit.recalcpricerun(factor, factoralter, factorspeed, vertrage);
         return response;
     }
 
@@ -94,7 +96,7 @@ public class MenuSpring {
     public String editPreis(
             @ModelAttribute PreisDTO preisDTO,
             Model model) {
-        BigDecimal preis = edit.recalcpricerun(preisDTO.getFaktor(),preisDTO.getAge(), preisDTO.getSpeed(), vertrage);
+        BigDecimal preis = edit.recalcpricerun(preisDTO.getFaktor(), preisDTO.getAge(), preisDTO.getSpeed(), vertrage);
         String confirm = "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN) + "€ pro Jahr";
         model.addAttribute("confirm", confirm);
         return "index";
@@ -116,15 +118,14 @@ public class MenuSpring {
     public Map<String, Object> createPreis(@ModelAttribute VertragDTO vertragdto) {
         boolean monatlich = Objects.equals(vertragdto.getAbrechnung(), "true");
         Map<String, Object> response = new HashMap<>();
-        if (!vertragdto.getPlz().isEmpty()){
+        if (!vertragdto.getPlz().isEmpty()) {
             int PLZ = Integer.parseInt(vertragdto.getPlz());
             Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), PLZ, vertragdto.getStadt(), vertragdto.getBundesland());
             Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
             double preis = creator.createPreis(monatlich, partner, fahrzeug);
-            response.put("preis", preis + " €");
+            response.put("preis", String.format(Locale.GERMANY, "%.2f €", preis));
             return response;
-        }
-        else{
+        } else {
             response.put("preis", "--,--" + " €");
             return response;
         }
@@ -137,14 +138,14 @@ public class MenuSpring {
 
         boolean monatlich = Objects.equals(vertragdto.getAbrechnung(), "true");
         int plzint = Integer.parseInt(vertragdto.getPlz());
-		int vsnr = create.createvsnr()
+        int vsnr = create.createvsnr();
         Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), plzint, vertragdto.getStadt(), vertragdto.getBundesland());
         Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
         double preis = creator.createPreis(monatlich, partner, fahrzeug);
         Vertrag vertrag = new Vertrag(vsnr, monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
         vertragsverwaltung.vertragAnlegen(vertrag);
 
-        String confirm = "Vertrag mit VSNR "+vsnr+" erfolgreich erstellt! Preis: " + preis + "€";
+        String confirm = "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + preis + "€";
         model.addAttribute("confirm", confirm);
         return "index";
     }

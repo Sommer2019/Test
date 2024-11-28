@@ -42,8 +42,11 @@ const herstellerInput = document.getElementById('hersteller');
 const vornameInput = document.getElementById('vorname');
 const nachnameInput = document.getElementById('nachname');
 const typInput = document.getElementById('typ');
-const plzInput = document.getElementById('plz');
+const strasseInput = document.getElementById('strasse');
 const hausnummerInput = document.getElementById('hausnummer');
+const plzInput = document.getElementById('plz');
+const stadtInput = document.getElementById('stadt');
+const bundeslandInput = document.getElementById('bundesland');
 const regexKennzeichen = /^\p{Lu}{1,3}-\p{Lu}{1,2}\d{1,4}[EH]?$/u;
 const regexName = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$/;
 const regexTyp = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$/;
@@ -80,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 });
-function validateInputHersteller(input, messageElement) {
+function validateInputHersteller(input) {
     fetch('brands.json')
         .then(response => response.json())
         .then(data => {
@@ -89,58 +92,60 @@ function validateInputHersteller(input, messageElement) {
             if (brands.includes(inputValue)) {
                 input.classList.remove('invalid');
                 input.classList.add('valid');
-                messageElement.textContent = '';
             } else {
                 input.classList.remove('valid');
-                input.classList.add('invalid');
-                messageElement.textContent = 'Ungültige Eingabe';
-            }
+                input.classList.add('invalid');}
         })
         .catch(error => {
             console.error('Error loading brands:', error);
-            messageElement.textContent = 'Error';
-            messageElement.style.color = 'red';
         });
 }
 
-function validateInput(input, regex, messageElement) {
+function validateInput(input, regex) {
     if (regex.test(input.value)) {
         input.classList.remove('invalid');
         input.classList.add('valid');
-        messageElement.textContent = '';
     } else {
         input.classList.remove('valid');
-        input.classList.add('invalid');
-        messageElement.textContent = 'Ungültige Eingabe';
-    }
+        input.classList.add('invalid');}
 }
 
 kennzeichenInput.addEventListener('input', function () {
-    validateInput(kennzeichenInput, regexKennzeichen, document.getElementById('kennzeichen-message'));
+    checkKennzeichen(kennzeichenInput, regexKennzeichen);
 });
 
 herstellerInput.addEventListener('input', function () {
-    validateInputHersteller(herstellerInput, document.getElementById('hersteller-message'));
+    validateInputHersteller(herstellerInput);
 });
 
 vornameInput.addEventListener('input', function () {
-    validateInput(vornameInput, regexName, document.getElementById('vorname-message'));
+    validateInput(vornameInput, regexName);
 });
 
 nachnameInput.addEventListener('input', function () {
-    validateInput(nachnameInput, regexName, document.getElementById('nachname-message'));
+    validateInput(nachnameInput, regexName);
 });
 
 typInput.addEventListener('input', function () {
-    validateInput(typInput, regexTyp, document.getElementById('typ-message'));
+    validateInput(typInput, regexTyp);
 });
-
-plzInput.addEventListener('input', function () {
-    validateInput(plzInput, regexPLZ, document.getElementById('plz-message'));
+nachnameInput.addEventListener('input', function () {
+    validateInput(nachnameInput, regexName);
 });
-
+strasseInput.addEventListener('input', function () {
+    validateInput(strasseInput, regexName);
+});
 hausnummerInput.addEventListener('input', function () {
-    validateInput(hausnummerInput, regexHausnummer, document.getElementById('hausnummer-message'));
+    validateInput(hausnummerInput, regexHausnummer);
+});
+plzInput.addEventListener('input', function () {
+    validateInput(plzInput, regexPLZ);
+});
+stadtInput.addEventListener('input', function () {
+    validateInput(stadtInput, regexName);
+});
+bundeslandInput.addEventListener('input', function () {
+    validateInput(bundeslandInput, regexName);
 });
 
 // Event Listener, um die Mindest- und Höchstwerte der anderen Felder basierend auf dem Beginn zu setzen
@@ -149,6 +154,31 @@ startInput.addEventListener('change', function () {
     endInput.min = startDate;
     createInput.max = startDate;
 });
+
+function checkKennzeichen(input, regex) {
+    if (regex.test(input.value)) {
+        input.classList.remove('invalid');
+        input.classList.add('valid');
+        fetch('vertrage.json')
+            .then(response => response.json())
+            .then(data => {
+                const kennzeichenExists = data.some(vertrag => vertrag.fahrzeug.amtlichesKennzeichen === input.value.trim());
+                if (kennzeichenExists) {
+                    input.classList.remove('valid');
+                    input.classList.add('invalid');
+                } else {
+                    input.classList.remove('invalid');
+                    input.classList.add('valid');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading vertrage:', error);
+            });
+    } else {
+        input.classList.remove('valid');
+        input.classList.add('invalid');
+    }
+}
 
 // Initiale Einstellung der Mindest- und Höchstwerte basierend auf dem heutigen Datum
 startInput.value = todayDate;

@@ -10,9 +10,9 @@ public class Setup {
     private final int port;
 
     public Setup() {
-        this.repositoryPath = "src/main/resources/vertrage.json";
-        this.preisPath = "src/main/resources/preiscalc.json";
-        this.brandsPath = "src/main/resources/brands.json";
+        this.repositoryPath = "src/main/resources/static/vertrage.json";
+        this.preisPath = "src/main/resources/static/preiscalc.json";
+        this.brandsPath = "src/main/resources/static/brands.json";
         this.testURL = "https://www.google.com";
         this.checkURL = "https://nominatim.openstreetmap.org/search?format=json&q=";
         this.host = "localhost";

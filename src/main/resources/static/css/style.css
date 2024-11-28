@@ -62,4 +62,4 @@ button {
     font-weight: bold;
     width: 200px; /* Adjust this width as needed */
 }
-.flex-container { display: flex; align-items: center; gap: 10px;
+.flex-container { display: flex; align-items: center; gap: 10px;}
