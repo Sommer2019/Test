@@ -24,12 +24,35 @@ function getMinBirth() {
 }
 function toggleDelete() {
     document.getElementById('delete-container').style.display = 'block';
-// Hide the delete button
-var deleteButton = document.getElementById("delete"); if (deleteButton.style.display === none") deleteButton.style.display inline-block' else ~ deleteButton.style.display = "none
+    // Hide the delete button
+    var deleteButton = document.getElementById("delete");
+    if (deleteButton.style.display === "none") {
+        deleteButton.style.display = "inline-block";
+    } else {
+        deleteButton.style.display = "none";
+    }
+    var editButton = document.getElementById("edit");
+    if (editButton.style.display === "none") {
+        editButton.style.display = "inline-block";
+    } else {
+        editButton.style.display = "none";
+    }
 }
 
 function hideDelete() {
     document.getElementById('delete-container').style.display = 'none';
+    var deleteButton = document.getElementById("delete");
+    if (deleteButton.style.display === "inline-block") {
+        deleteButton.style.display = "none";
+    } else {
+        deleteButton.style.display = "inline-block";
+    }
+    var editButton = document.getElementById("edit");
+    if (editButton.style.display === "inline-block") {
+        editButton.style.display = "none";
+    } else {
+        editButton.style.display = "inline-block";
+    }
 }
 // Setze das heutige Datum als Wert und Mindestdatum für das Datumseingabefeld
 const todayDate = getTodayDate();
