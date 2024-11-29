@@ -18,6 +18,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
+import java.time.LocalDate;
 
 
 @Controller
@@ -129,11 +130,10 @@ public class MenuSpring {
             Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
             double preis = creator.createPreis(monatlich, partner, fahrzeug);
             response.put("preis", String.format(Locale.GERMANY, "%.2f €", preis));
-            return response;
         } else {
             response.put("preis", "--,--" + " €");
-            return response;
         }
+        return response;
     }
 
     @PostMapping("/showEdit")
@@ -201,11 +201,8 @@ public class MenuSpring {
             vertragDTO.setAbrechnung("false");
         }
         model.addAttribute("versicherungsbeginn", v.getVersicherungsbeginn());
-        vertragDTO.setStart(v.getVersicherungsbeginn());
         model.addAttribute("versicherungsablauf", v.getVersicherungsablauf());
-        vertragDTO.setEnd(v.getVersicherungsablauf());
         model.addAttribute("antragsdatum", v.getAntragsDatum());
-        vertragDTO.setCreate(v.getAntragsDatum());
         model.addAttribute("kennzeichen", v.getFahrzeug().getAmtlichesKennzeichen());
         vertragDTO.setKennzeichen(v.getFahrzeug().getAmtlichesKennzeichen());
         model.addAttribute("hersteller", v.getFahrzeug().getHersteller());
@@ -223,7 +220,6 @@ public class MenuSpring {
         model.addAttribute("geschlecht", v.getPartner().getGeschlecht());
         vertragDTO.setGender(String.valueOf(v.getPartner().getGeschlecht()));
         model.addAttribute("geburtsdatum", v.getPartner().getGeburtsdatum());
-        vertragDTO.setBirth(v.getPartner().getGeburtsdatum());
         model.addAttribute("strasse", v.getPartner().getStrasse());
         vertragDTO.setStrasse(v.getPartner().getStrasse());
         model.addAttribute("hausnummer", v.getPartner().getHausnummer());
@@ -236,6 +232,9 @@ public class MenuSpring {
         vertragDTO.setBundesland(v.getPartner().getBundesland());
         model.addAttribute("land", v.getPartner().getLand());
         vertragDTO.setLand(v.getPartner().getLand());
+        if(v.getVersicherungsablauf().isBefore(LocalDate.now())){
+            model.addAttribute("gueltig", "Vertrag abgelaufen!");
+        }
         return "handleVertrag";
     }
 

@@ -55,6 +55,7 @@
                 <div><span>Land:</span><span th:text="${vertrag.partner.land}"></span></div>
             </div>
         </details>
+        <b style="color: red;" th:if="${vertrag.versicherungsablauf.isBefore(T(java.time.LocalDate).now())}">Vertrag abgelaufen</b>
     </details>
     <p></p>
 </div>

@@ -11,5 +11,3 @@
 3. EditVertrag:
    - Vorberechnung button
    - Datum-Felder preset
-4. Anzeige Vertrag:
-   - Abgelaufen?
