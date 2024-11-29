@@ -59,16 +59,20 @@
     <div id="handledVertrag" class="vertrag-details">
         <details open>
             <summary><b>Vertragsdaten</b></summary>
-            <div><span>Preis:</span><span th:text="${preis} + ' €'"></span><div id="preiscalc">
-                    <button type="button" id="calculatePrice"><span id="preis"></span></button>
+            <div><span>Preis:</span><span th:text="${preis} + ' €'"></span>
+                <div id="preiscalc">
+                    <label></label>
+                    <button type="button" id="calculatePrice"><p id="preis" th:text="${preis} + ' €'"></p></button>
                 </div>
             </div>
             <div><span>Abrechnungszeitraum:</span><span
-                    th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span> <label></label>
-                <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="true" id="check1">
-                <label for="check1">monatlich</label>
-                <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="false" id="check2">
-                <label for="check2">jährlich</label>
+                    th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span>
+                <div>
+                    <label></label>
+                    <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="true" id="check1">
+                    <label for="check1">monatlich</label>
+                    <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="false" id="check2">
+                    <label for="check2">jährlich</label></div>
             </div>
             <div><span>Versicherungsbeginn:</span><span th:text="${versicherungsbeginn}"></span><label
                     for="start"></label>
@@ -90,27 +94,29 @@
             <div><span>Typ:</span><span th:text="${typ}"></span><label for="typ"></label>
                 <input th:field="*{typ}" type="text" id="typ" required></div>
             <div><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span>
-                    <input th:field="*{speed}" type="number" id="speed" min="45" max="250" required>
-                    <div id="kmh">km/h</div>
+                <label for="speed"></label>
+                <input th:field="*{speed}" type="number" id="speed" min="45" max="250" required>
+                <div id="kmh">km/h</div>
             </div>
             <div><span>Wagnisskennziffer:</span><span th:text="${wkz}"></span><label for="wkz"></label>
                 <input th:field="*{wkz}" type="number" id="wkz" min="112" max="112" required></div>
-    </details>
-    <p></p>
-    <details open>
-        <summary><b>Partnerdaten:</b></summary>
+        </details>
+        <p></p>
+        <details open>
+            <summary><b>Partnerdaten:</b></summary>
             <div><span>Vorname:</span><span th:text="${vorname}"></span><label for="vorname"></label>
                 <input th:field="*{vorname}" name="vorname" type="text" id="vorname" required></div>
             <div><span>Nachname:</span><span th:text="${nachname}"></span><label for="nachname"></label>
                 <input th:field="*{nachname}" type="text" id="nachname" required></div>
-            <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span><input th:field="*{gender}"
-                                                                                     type="radio" name="gender"
-                                                                                     value="M" id="check3">
+            <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span>
+                <label></label>
+                <input th:field="*{gender}" type="radio" name="gender" value="M" id="check3">
                 <label for="check3">M</label>
                 <input th:field="*{gender}" type="radio" name="gender" value="W" id="check4">
                 <label for="check4">W</label>
                 <input th:field="*{gender}" type="radio" name="gender" value="D" id="check5">
-                <label for="check5">D</label></div>
+                <label for="check5">D</label>
+            </div>
             <div><span>Geburtsdatum:</span><span th:text="${geburtsdatum}"></span><label for="birth"></label>
                 <input th:field="*{birth}" type="date" id="birth" required></div>
             <div><span>Straße:</span><span th:text="${strasse}"></span><label for="strasse"></label>
@@ -125,7 +131,7 @@
                 <input th:field="*{bundesland}" type="text" id="bundesland" required></div>
             <div><span>Land:</span><span th:text="${land}"></span><label for="land"></label>
                 <input th:field="*{land}" type="text" id="land" value="Deutschland" readonly></div>
-    </details>
+        </details>
     </div>
 </form>
 <b style="color: red;"><span th:text="${gueltig}"></span></b>
@@ -134,5 +140,63 @@
     <button>Zurück</button>
 </a>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
+<script>document.getElementById('calculatePrice').addEventListener('click', function () {
+    var form = document.getElementById('myForm');
+    var formData = new FormData(form);
+    fetch('/createPreis', {method: 'POST', body: formData}).then(response => response.json()).then(data => {
+        document.getElementById('preis').textContent = data.preis;
+    }).catch(error => {
+        console.error('Fehler:', error);
+        alert('Es gab einen Fehler bei der Berechnung des Preises.');
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('myForm');
+    const calculateButton = document.getElementById('calculateButton');
+    const preisDiv = document.getElementById('preis');
+
+    calculateButton.addEventListener('click', function () {
+        const formData = new FormData(form);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+
+        fetch('/calculatePreis', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                preisDiv.textContent = data.preis;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+});
+const startDateSpan = document.querySelector('span[th\\:text="${versicherungsbeginn}"]');
+const endDateSpan = document.querySelector('span[th\\:text="${versicherungsablauf}"]');
+const createDateSpan = document.querySelector('span[th\\:text="${antragsdatum}"]');
+const createBirthSpan = document.querySelector('span[th\\:text="${geburtsdatum}"]');
+
+const todayDate = new Date().toISOString().split('T')[0];
+const maxbirth = '1900-01-01';
+const minbirth = todayDate;
+
+document.getElementById('start').value = startDateSpan.textContent.trim();
+document.getElementById('start').min = todayDate;
+
+document.getElementById('birth').min = maxbirth;
+document.getElementById('birth').value = createBirthSpan.textContent.trim();
+document.getElementById('birth').max = minbirth;
+
+document.getElementById('end').min = todayDate;
+document.getElementById('end').value = endDateSpan.textContent.trim();
+
+document.getElementById('create').value = createDateSpan.textContent.trim();
+document.getElementById('create').max = todayDate;
+</script>
 </body>
 </html>

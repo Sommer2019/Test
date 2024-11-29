@@ -66,6 +66,7 @@ const endInput = document.getElementById('end');
 const createInput = document.getElementById('create');
 const kennzeichenInput = document.getElementById('kennzeichen');
 const herstellerInput = document.getElementById('hersteller');
+const updatePreis = document.getElementById('preisedit');
 const vornameInput = document.getElementById('vorname');
 const nachnameInput = document.getElementById('nachname');
 const typInput = document.getElementById('typ');
@@ -79,43 +80,6 @@ const regexName = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñ�
 const regexTyp = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$/;
 const regexPLZ = /^\d{5}$/;
 const regexHausnummer = /^\d+[a-zA-Z]?$/;
-document.getElementById('calculatePrice').addEventListener('click', function () {
-    var form = document.getElementById('myForm');
-    var formData = new FormData(form);
-    fetch('/createPreis', {method: 'POST', body: formData}).then(response => response.json()).then(data => {
-        document.getElementById('preis').textContent = data.preis;
-    }).catch(error => {
-        console.error('Fehler:', error);
-        alert('Es gab einen Fehler bei der Berechnung des Preises.');
-    });
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('myForm');
-    const calculateButton = document.getElementById('calculateButton');
-    const preisDiv = document.getElementById('preis');
-
-    calculateButton.addEventListener('click', function () {
-        const formData = new FormData(form);
-        const jsonData = {};
-        formData.forEach((value, key) => {
-            jsonData[key] = value;
-        });
-
-        fetch('/calculatePreis', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                preisDiv.textContent = data.preis;
-            })
-            .catch(error => console.error('Error:', error));
-    });
-});
-
 function validateInputHersteller(input) {
     fetch('brands.json')
         .then(response => response.json())
@@ -135,6 +99,17 @@ function validateInputHersteller(input) {
         });
 }
 
+function updatePrice() {
+    fetch('/calculatePrice', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('preis').innerText = data.price + ' €';
+        })
+        .catch(error => console.error('Error:', error));
+}
+
 function validateInput(input, regex) {
     if (regex.test(input.value)) {
         input.classList.remove('invalid');
@@ -151,6 +126,10 @@ kennzeichenInput.addEventListener('input', function () {
 
 herstellerInput.addEventListener('input', function () {
     validateInputHersteller(herstellerInput);
+});
+
+updatePreis.addEventListener('click', function () {
+    updatePrice();
 });
 
 vornameInput.addEventListener('input', function () {
@@ -245,13 +224,3 @@ function hideEdit() {
 }
 
 // Initiale Einstellung der Mindest- und Höchstwerte basierend auf dem heutigen Datum
-startInput.value = todayDate;
-startInput.min = todayDate;
-birthInput.min = maxbirth;
-birthInput.value = minbirth;
-birthInput.max = minbirth;
-endInput.min = todayDate;
-endInput.value = todayDate;
-endInput.min = todayDate;
-createInput.value = todayDate;
-createInput.max = todayDate;

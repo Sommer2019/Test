@@ -45,31 +45,12 @@ button {
 
 .vertrag-details div span {
     display: table-cell;
-    padding: 10px 20px;
+    padding: 5px 20px;
+    width: 200px;
 }
 
 .vertrag-details div span:first-child {
     font-weight: bold;
-    width: 200px; /* Adjust this width as needed */
-}
-
-.vertrag-details {
-    display: table;
-    width: 100%;
-}
-
-.vertrag-details div {
-    display: table-row;
-}
-
-.vertrag-details div span {
-    display: table-cell;
-    padding: 10px 20px;
-}
-
-.vertrag-details div span:first-child {
-    font-weight: bold;
-    width: 200px; /* Adjust this width as needed */
 }
 
 .flex-container {

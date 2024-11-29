@@ -194,6 +194,7 @@ public class MenuSpring {
         model.addAttribute("vertragdto", vertragDTO);
         model.addAttribute("vsnr", VSNR);
         model.addAttribute("preis", String.valueOf(v.getPreis()).replace('.', ','));
+        model.addAttribute("preisnew", String.valueOf(v.getPreis()).replace('.', ','));
         model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
         if (v.getMonatlich()) {
             vertragDTO.setAbrechnung("true");
