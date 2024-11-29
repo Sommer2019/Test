@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vertrag</title>
-    <script type="text/javascript" th:src="@{/js/script.js}"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <style>
         input, label, #kmh, #preiscalc, #editContainer, #deleteContainer {
@@ -38,10 +37,12 @@
             <summary><b>Vertragsdaten</b></summary>
             <div><span>Preis:</span><span th:text="${preis} + ' €'"></span>
                 <div id="preiscalc">
-                    <button type="button" id="calculatePrice"><span id="preis" th:text="${preis} + ' €'"></span></button>
+                    <button type="button" id="calculatePrice"><span id="preis" th:text="${preis} + ' €'"></span>
+                    </button>
                 </div>
             </div>
-            <div><span>Abrechnungszeitraum:</span><span th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span>
+            <div><span>Abrechnungszeitraum:</span><span
+                    th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span>
                 <div>
                     <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="true" id="check1">
                     <label for="check1">monatlich</label>
@@ -49,13 +50,13 @@
                     <label for="check2">jährlich</label>
                 </div>
             </div>
-            <div><span>Versicherungsbeginn:</span><span th:text="${versicherungsbeginn}"></span>
+            <div><span>Versicherungsbeginn:</span><span th:text="${start}"></span>
                 <input th:field="*{start}" type="date" id="start" name="start" max="9998-12-31" required>
             </div>
-            <div><span>Versicherungsablauf:</span><span th:text="${versicherungsablauf}"></span>
+            <div><span>Versicherungsablauf:</span><span th:text="${end}"></span>
                 <input th:field="*{end}" type="date" id="end" max="9999-12-31" required>
             </div>
-            <div><span>Antragsdatum:</span><span th:text="${antragsdatum}"></span>
+            <div><span>Antragsdatum:</span><span th:text="${create}"></span>
                 <input th:field="*{create}" type="date" id="create" max="9998-12-31" required>
             </div>
         </details>
@@ -94,7 +95,7 @@
                 <input th:field="*{gender}" type="radio" name="gender" value="D" id="check5">
                 <label for="check5">D</label>
             </div>
-            <div><span>Geburtsdatum:</span><span th:text="${geburtsdatum}"></span>
+            <div><span>Geburtsdatum:</span><span th:text="${birth}"></span>
                 <input th:field="*{birth}" type="date" id="birth" required>
             </div>
             <div><span>Straße:</span><span th:text="${strasse}"></span>
@@ -122,6 +123,7 @@
 <a href="/">
     <button>Zurück</button>
 </a>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
 <script>
     document.getElementById('calculatePrice').addEventListener('click', function () {
         var form = document.getElementById('myForm');
@@ -153,21 +155,14 @@
                 .then(data => preisDiv.textContent = data.preis)
                 .catch(error => console.error('Error:', error));
         });
-
-        const todayDate = new Date().toISOString().split('T')[0];
-        const maxbirth = '1900-01-01';
-        const minbirth = todayDate;
-
-        document.getElementById('start').value = document.querySelector('span[th\\:text="${versicherungsbeginn}"]').textContent.trim();
-        document.getElementById('start').min = todayDate;
-        document.getElementById('birth').min = maxbirth;
-        document.getElementById('birth').value = document.querySelector('span[th\\:text="${geburtsdatum}"]').textContent.trim();
-        document.getElementById('birth').max = minbirth;
-        document.getElementById('end').min = todayDate;
-        document.getElementById('end').value = document.querySelector('span[th\\:text="${versicherungsablauf}"]').textContent.trim();
-        document.getElementById('create').value = document.querySelector('span[th\\:text="${antragsdatum}"]').textContent.trim();
-        document.getElementById('create').max = todayDate;
     });
+    startInput.min = todayDate;
+    birthInput.min = maxbirth;
+    birthInput.max = minbirth;
+    endInput.min = todayDate;
+    endInput.min = todayDate;
+    createInput.max = todayDate;
+
 </script>
 </body>
 </html>

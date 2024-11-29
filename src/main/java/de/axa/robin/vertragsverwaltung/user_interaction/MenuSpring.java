@@ -171,9 +171,12 @@ public class MenuSpring {
         model.addAttribute("preisnew", String.valueOf(v.getPreis()).replace('.', ','));
         model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
         vertragDTO.setAbrechnung(v.getMonatlich() ? "true" : "false");
-        model.addAttribute("versicherungsbeginn", v.getVersicherungsbeginn());
-        model.addAttribute("versicherungsablauf", v.getVersicherungsablauf());
-        model.addAttribute("antragsdatum", v.getAntragsDatum());
+        model.addAttribute("start", v.getVersicherungsbeginn());
+        vertragDTO.setStart(v.getVersicherungsbeginn());
+        model.addAttribute("end", v.getVersicherungsablauf());
+        vertragDTO.setEnd(v.getVersicherungsablauf());
+        model.addAttribute("create", v.getAntragsDatum());
+        vertragDTO.setCreate(v.getAntragsDatum());
         model.addAttribute("kennzeichen", v.getFahrzeug().getAmtlichesKennzeichen());
         vertragDTO.setKennzeichen(v.getFahrzeug().getAmtlichesKennzeichen());
         model.addAttribute("hersteller", v.getFahrzeug().getHersteller());
@@ -190,7 +193,8 @@ public class MenuSpring {
         vertragDTO.setNachname(v.getPartner().getNachname());
         model.addAttribute("geschlecht", v.getPartner().getGeschlecht());
         vertragDTO.setGender(String.valueOf(v.getPartner().getGeschlecht()));
-        model.addAttribute("geburtsdatum", v.getPartner().getGeburtsdatum());
+        model.addAttribute("birth", v.getPartner().getGeburtsdatum());
+        vertragDTO.setBirth(v.getPartner().getGeburtsdatum());
         model.addAttribute("strasse", v.getPartner().getStrasse());
         vertragDTO.setStrasse(v.getPartner().getStrasse());
         model.addAttribute("hausnummer", v.getPartner().getHausnummer());
