@@ -29,37 +29,51 @@ input[type="date"],
 input[type="number"] {
     width: 200px; /* Hier kannst du die Breite anpassen */
 }
+
 button {
     width: 200px; /* Hier kannst du die Breite anpassen */
 }
-.vertrag-details {
-            display: table;
-            width: 100%;
-}
-.vertrag-details div {
-    display: table-row;
-}
-.vertrag-details div span {
-    display: table-cell;
-    padding: 5px 10px;
-}
-.vertrag-details div span:first-child {
-    font-weight: bold;
-    width: 200px; /* Adjust this width as needed */
-}
+
 .vertrag-details {
     display: table;
     width: 100%;
 }
+
 .vertrag-details div {
     display: table-row;
 }
+
 .vertrag-details div span {
     display: table-cell;
     padding: 5px 10px;
 }
+
 .vertrag-details div span:first-child {
     font-weight: bold;
     width: 200px; /* Adjust this width as needed */
 }
-.flex-container { display: flex; align-items: center; gap: 10px;}
+
+.vertrag-details {
+    display: table;
+    width: 100%;
+}
+
+.vertrag-details div {
+    display: table-row;
+}
+
+.vertrag-details div span {
+    display: table-cell;
+    padding: 5px 10px;
+}
+
+.vertrag-details div span:first-child {
+    font-weight: bold;
+    width: 200px; /* Adjust this width as needed */
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

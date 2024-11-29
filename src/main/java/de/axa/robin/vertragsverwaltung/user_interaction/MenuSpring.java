@@ -136,6 +136,24 @@ public class MenuSpring {
         }
     }
 
+    @PostMapping("/showEdit")
+    public String editVertrag(
+            @ModelAttribute VertragDTO vertragdto,
+            Model model) {
+        vertragsverwaltung.vertragLoeschen(vsnr);
+        boolean monatlich = Objects.equals(vertragdto.getAbrechnung(), "true");
+        int plzint = Integer.parseInt(vertragdto.getPlz());
+        Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), plzint, vertragdto.getStadt(), vertragdto.getBundesland());
+        Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
+        double preis = creator.createPreis(monatlich, partner, fahrzeug);
+        Vertrag vertrag = new Vertrag(vsnr, monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
+        vertragsverwaltung.vertragAnlegen(vertrag);
+
+        String confirm = "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(preis).replace('.', ',') + "€";
+        model.addAttribute("confirm", confirm);
+        return "index";
+    }
+
     @PostMapping("/createVertrag")
     public String createVertrag(
             @ModelAttribute VertragDTO vertragdto,
@@ -172,27 +190,52 @@ public class MenuSpring {
             model.addAttribute("result", result);
             return "index";
         }
+        VertragDTO vertragDTO = new VertragDTO();
+        model.addAttribute("vertragdto", vertragDTO);
         model.addAttribute("vsnr", VSNR);
         model.addAttribute("preis", String.valueOf(v.getPreis()).replace('.', ','));
         model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
+        if (v.getMonatlich()) {
+            vertragDTO.setAbrechnung("true");
+        } else {
+            vertragDTO.setAbrechnung("false");
+        }
         model.addAttribute("versicherungsbeginn", v.getVersicherungsbeginn());
+        vertragDTO.setStart(v.getVersicherungsbeginn());
         model.addAttribute("versicherungsablauf", v.getVersicherungsablauf());
+        vertragDTO.setEnd(v.getVersicherungsablauf());
         model.addAttribute("antragsdatum", v.getAntragsDatum());
+        vertragDTO.setCreate(v.getAntragsDatum());
         model.addAttribute("kennzeichen", v.getFahrzeug().getAmtlichesKennzeichen());
+        vertragDTO.setKennzeichen(v.getFahrzeug().getAmtlichesKennzeichen());
         model.addAttribute("hersteller", v.getFahrzeug().getHersteller());
+        vertragDTO.setHersteller(v.getFahrzeug().getHersteller());
         model.addAttribute("typ", v.getFahrzeug().getTyp());
+        vertragDTO.setTyp(v.getFahrzeug().getTyp());
         model.addAttribute("maxspeed", v.getFahrzeug().getHoechstgeschwindigkeit());
+        vertragDTO.setSpeed(v.getFahrzeug().getHoechstgeschwindigkeit());
         model.addAttribute("wkz", v.getFahrzeug().getWagnisskennziffer());
+        vertragDTO.setWkz(v.getFahrzeug().getWagnisskennziffer());
         model.addAttribute("vorname", v.getPartner().getVorname());
+        vertragDTO.setVorname(v.getPartner().getVorname());
         model.addAttribute("nachname", v.getPartner().getNachname());
+        vertragDTO.setNachname(v.getPartner().getNachname());
         model.addAttribute("geschlecht", v.getPartner().getGeschlecht());
+        vertragDTO.setGender(String.valueOf(v.getPartner().getGeschlecht()));
         model.addAttribute("geburtsdatum", v.getPartner().getGeburtsdatum());
+        vertragDTO.setBirth(v.getPartner().getGeburtsdatum());
         model.addAttribute("strasse", v.getPartner().getStrasse());
+        vertragDTO.setStrasse(v.getPartner().getStrasse());
         model.addAttribute("hausnummer", v.getPartner().getHausnummer());
+        vertragDTO.setHausnummer(v.getPartner().getHausnummer());
         model.addAttribute("plz", v.getPartner().getPlz());
+        vertragDTO.setPlz(String.valueOf(v.getPartner().getPlz()));
         model.addAttribute("stadt", v.getPartner().getStadt());
+        vertragDTO.setStadt(v.getPartner().getStadt());
         model.addAttribute("bundesland", v.getPartner().getBundesland());
+        vertragDTO.setBundesland(v.getPartner().getBundesland());
         model.addAttribute("land", v.getPartner().getLand());
+        vertragDTO.setLand(v.getPartner().getLand());
         return "handleVertrag";
     }
 

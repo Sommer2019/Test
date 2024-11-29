@@ -1,10 +1,15 @@
-1. Design
-2. Create:
-   - Backend check
-     - Adresse
-     - Kennzeichen
-     - Zahlen
-     - Datum
-     - Texte
-     - Radios
-3. EditVertrag
+1. Design:
+   - Einrückung Edit
+   - weiteres?
+2. Backend check:
+   - Adresse
+   - Kennzeichen
+   - Zahlen
+   - Datum
+   - Texte
+   - Radios
+3. EditVertrag:
+   - Vorberechnung button
+   - Datum-Felder preset
+4. Anzeige Vertrag:
+   - Abgelaufen?

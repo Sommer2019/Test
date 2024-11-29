@@ -22,8 +22,9 @@ function getMinBirth() {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+
 function toggleDelete() {
-    document.getElementById('delete-container').style.display = 'block';
+    document.getElementById('deleteContainer').style.display = 'block';
     // Hide the delete button
     var deleteButton = document.getElementById("delete");
     if (deleteButton.style.display === "none") {
@@ -40,7 +41,7 @@ function toggleDelete() {
 }
 
 function hideDelete() {
-    document.getElementById('delete-container').style.display = 'none';
+    document.getElementById('deleteContainer').style.display = 'none';
     var deleteButton = document.getElementById("delete");
     if (deleteButton.style.display === "inline-block") {
         deleteButton.style.display = "none";
@@ -54,6 +55,7 @@ function hideDelete() {
         editButton.style.display = "inline-block";
     }
 }
+
 // Setze das heutige Datum als Wert und Mindestdatum für das Datumseingabefeld
 const todayDate = getTodayDate();
 const minbirth = getMinBirth();
@@ -77,11 +79,16 @@ const regexName = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñ�
 const regexTyp = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$/;
 const regexPLZ = /^\d{5}$/;
 const regexHausnummer = /^\d+[a-zA-Z]?$/;
-document.getElementById('calculatePrice').addEventListener('click', function() {
-var form = document.getElementById('myForm'); var formData = new FormData(form);
-fetch('/createPreis', { method: 'POST', body: formData }) .then(response => response.json()) .then(data => {
-document.getElementById('preis').textContent = data.preis; }) .catch(error => { console.error('Fehler:', error);
-alert('Es gab einen Fehler bei der Berechnung des Preises.'); }); });
+document.getElementById('calculatePrice').addEventListener('click', function () {
+    var form = document.getElementById('myForm');
+    var formData = new FormData(form);
+    fetch('/createPreis', {method: 'POST', body: formData}).then(response => response.json()).then(data => {
+        document.getElementById('preis').textContent = data.preis;
+    }).catch(error => {
+        console.error('Fehler:', error);
+        alert('Es gab einen Fehler bei der Berechnung des Preises.');
+    });
+});
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('myForm');
     const calculateButton = document.getElementById('calculateButton');
@@ -108,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 });
+
 function validateInputHersteller(input) {
     fetch('brands.json')
         .then(response => response.json())
@@ -119,7 +127,8 @@ function validateInputHersteller(input) {
                 input.classList.add('valid');
             } else {
                 input.classList.remove('valid');
-                input.classList.add('invalid');}
+                input.classList.add('invalid');
+            }
         })
         .catch(error => {
             console.error('Error loading brands:', error);
@@ -132,7 +141,8 @@ function validateInput(input, regex) {
         input.classList.add('valid');
     } else {
         input.classList.remove('valid');
-        input.classList.add('invalid');}
+        input.classList.add('invalid');
+    }
 }
 
 kennzeichenInput.addEventListener('input', function () {
@@ -204,24 +214,34 @@ function checkKennzeichen(input, regex) {
         input.classList.add('invalid');
     }
 }
+
 function toggleEdit() {
     var handledVertrag = document.getElementById("handledVertrag");
     var inputs = handledVertrag.querySelectorAll("input, label, #preiscalc, #kmh");
-    inputs.forEach(function(input) {
-        if (input.style.display === "inline-block") {
-            input.style.display = "none";
-        } else {
-            input.style.display = "inline-block";
-        }
+    inputs.forEach(function (input) {
+        input.style.display = "inline-block";
+    });
+    var editContainer = document.getElementById("editContainer");
+    editContainer.style.display = "inline-block";
+    var editButton = document.getElementById("edit");
+    editButton.style.display = "none";
+    var deleteButton = document.getElementById("delete");
+    deleteButton.style.display = "none";
+}
+
+function hideEdit() {
+    var handledVertrag = document.getElementById("handledVertrag");
+    var inputs = handledVertrag.querySelectorAll("#editContainer, input, label, #preiscalc, #kmh");
+    inputs.forEach(function (input) {
+        input.style.display = "none";
     });
 
-    // Hide the delete button when Bearbeiten is clicked
+    var editContainer = document.getElementById("editContainer");
+    editContainer.style.display = "none";
     var deleteButton = document.getElementById("delete");
-    if (deleteButton.style.display === "none") {
-        deleteButton.style.display = "inline-block";
-    } else {
-        deleteButton.style.display = "none";
-    }
+    deleteButton.style.display = "inline-block";
+    var editButton = document.getElementById("edit");
+    editButton.style.display = "inline-block";
 }
 
 // Initiale Einstellung der Mindest- und Höchstwerte basierend auf dem heutigen Datum
