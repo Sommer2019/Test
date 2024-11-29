@@ -1,9 +1,28 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
+import de.axa.robin.vertragsverwaltung.config.Setup;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+
+import java.io.FileReader;
+
 public class PreisDTO {
-    private double speed = 0.2;
-    private double age = 0.5;
-    private double faktor = 1.5;
+    private double speed;
+    private double age;
+    private double faktor;
+    private final Setup setup = new Setup();
+
+    public PreisDTO() {
+        try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
+            JsonObject jsonObject = reader.readObject();
+            this.faktor = jsonObject.getJsonNumber("factor").doubleValue();
+            this.age = jsonObject.getJsonNumber("factorage").doubleValue();
+            this.speed = jsonObject.getJsonNumber("factorspeed").doubleValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public double getSpeed() {
         return speed;

@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage.validators;
 
-import de.axa.robin.vertragsverwaltung.storage.Setup;
+import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 

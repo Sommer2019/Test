@@ -50,13 +50,13 @@
                     <label for="check2">jährlich</label>
                 </div>
             </div>
-            <div><span>Versicherungsbeginn:</span><span th:text="${start}"></span>
+            <div><span>Versicherungsbeginn:</span><span id="startSpan" th:text="${start}"></span>
                 <input th:field="*{start}" type="date" id="start" name="start" max="9998-12-31" required>
             </div>
-            <div><span>Versicherungsablauf:</span><span th:text="${end}"></span>
+            <div><span>Versicherungsablauf:</span><span id="endSpan" th:text="${end}"></span>
                 <input th:field="*{end}" type="date" id="end" max="9999-12-31" required>
             </div>
-            <div><span>Antragsdatum:</span><span th:text="${create}"></span>
+            <div><span>Antragsdatum:</span><span id="createSpan" th:text="${create}"></span>
                 <input th:field="*{create}" type="date" id="create" max="9998-12-31" required>
             </div>
         </details>
@@ -95,8 +95,8 @@
                 <input th:field="*{gender}" type="radio" name="gender" value="D" id="check5">
                 <label for="check5">D</label>
             </div>
-            <div><span>Geburtsdatum:</span><span th:text="${birth}"></span>
-                <input th:field="*{birth}" type="date" id="birth" required>
+            <div><span>Geburtsdatum:</span><span id="birthSpan" th:text="${birth}"></span>
+                <input th:field="*{birth}" value="2006-01-01" type="date" id="birth" required>
             </div>
             <div><span>Straße:</span><span th:text="${strasse}"></span>
                 <input th:field="*{strasse}" type="text" id="strasse" required>
@@ -124,45 +124,6 @@
     <button>Zurück</button>
 </a>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
-<script>
-    document.getElementById('calculatePrice').addEventListener('click', function () {
-        var form = document.getElementById('myForm');
-        var formData = new FormData(form);
-        fetch('/createPreis', {method: 'POST', body: formData})
-            .then(response => response.json())
-            .then(data => document.getElementById('preis').textContent = data.preis)
-            .catch(error => {
-                console.error('Fehler:', error);
-                alert('Es gab einen Fehler bei der Berechnung des Preises.');
-            });
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('myForm');
-        const calculateButton = document.getElementById('calculateButton');
-        const preisDiv = document.getElementById('preis');
-
-        calculateButton.addEventListener('click', function () {
-            const formData = new FormData(form);
-            const jsonData = {};
-            formData.forEach((value, key) => jsonData[key] = value);
-
-            fetch('/calculatePreis', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(jsonData)
-            })
-                .then(response => response.json())
-                .then(data => preisDiv.textContent = data.preis)
-                .catch(error => console.error('Error:', error));
-        });
-    });
-    startInput.min = todayDate;
-    birthInput.min = maxbirth;
-    birthInput.max = minbirth;
-    endInput.min = todayDate;
-    endInput.min = todayDate;
-    createInput.max = todayDate;
-
-</script>
+<script type="text/javascript" th:src="@{/js/handleVertrag.js}"></script>
 </body>
 </html>

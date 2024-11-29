@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.storage;
+package de.axa.robin.vertragsverwaltung.config;
 
 public class Setup {
     private final String repositoryPath;

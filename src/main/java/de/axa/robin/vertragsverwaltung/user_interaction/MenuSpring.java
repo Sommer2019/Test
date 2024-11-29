@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.*;
-import de.axa.robin.vertragsverwaltung.storage.Setup;
+import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.storage.editor.Edit;
@@ -172,11 +172,8 @@ public class MenuSpring {
         model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
         vertragDTO.setAbrechnung(v.getMonatlich() ? "true" : "false");
         model.addAttribute("start", v.getVersicherungsbeginn());
-        vertragDTO.setStart(v.getVersicherungsbeginn());
         model.addAttribute("end", v.getVersicherungsablauf());
-        vertragDTO.setEnd(v.getVersicherungsablauf());
         model.addAttribute("create", v.getAntragsDatum());
-        vertragDTO.setCreate(v.getAntragsDatum());
         model.addAttribute("kennzeichen", v.getFahrzeug().getAmtlichesKennzeichen());
         vertragDTO.setKennzeichen(v.getFahrzeug().getAmtlichesKennzeichen());
         model.addAttribute("hersteller", v.getFahrzeug().getHersteller());
@@ -194,7 +191,6 @@ public class MenuSpring {
         model.addAttribute("geschlecht", v.getPartner().getGeschlecht());
         vertragDTO.setGender(String.valueOf(v.getPartner().getGeschlecht()));
         model.addAttribute("birth", v.getPartner().getGeburtsdatum());
-        vertragDTO.setBirth(v.getPartner().getGeburtsdatum());
         model.addAttribute("strasse", v.getPartner().getStrasse());
         vertragDTO.setStrasse(v.getPartner().getStrasse());
         model.addAttribute("hausnummer", v.getPartner().getHausnummer());

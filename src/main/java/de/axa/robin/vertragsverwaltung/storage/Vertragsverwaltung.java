@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage;
 
+import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
 import java.util.*;

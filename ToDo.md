@@ -7,7 +7,3 @@
    - Datum
    - Texte
    - Radios
-3. EditVertrag:
-   - Datum-Felder preset
-4. outsourcen:
-   - Script reste
