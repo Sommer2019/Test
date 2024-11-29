@@ -20,7 +20,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.time.LocalDate;
 
-
 @Controller
 public class MenuSpring {
     private int vsnr;
@@ -37,20 +36,13 @@ public class MenuSpring {
         return vsnr;
     }
 
-    private final Create creator = new Create(input, vertragsverwaltung, output);
-
     @GetMapping("/printVertrage")
     public String showAll(Model model) {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMANY);
-        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", symbols);
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.GERMANY));
         vertrage = vertragsverwaltung.getVertrage();
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            if (!v.getMonatlich()) {
-                summe = summe.add(BigDecimal.valueOf(v.getPreis()));
-            } else {
-                summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
-            }
+            summe = summe.add(BigDecimal.valueOf(v.getPreis() * (v.getMonatlich() ? 12 : 1)));
             v.setFormattedPreis(decimalFormat.format(v.getPreis()));
         }
         model.addAttribute("vertrage", vertrage);
@@ -71,18 +63,14 @@ public class MenuSpring {
 
     @GetMapping("/editPreis")
     public String editPreis(Model model) {
-        PreisDTO preisDTO = new PreisDTO();
-        // Add any necessary attributes to the model
-        model.addAttribute("preisdto", preisDTO);
+        model.addAttribute("preisdto", new PreisDTO());
         return "editPreis";
     }
 
     @PostMapping("/precalcPreis")
     @ResponseBody
     public Map<String, Object> editPreis(@ModelAttribute PreisDTO preisDTO) {
-        double factor = 1.5;
-        double factoralter = 0.1;
-        double factorspeed = 0.4;
+        double factor = 1.5, factoralter = 0.1, factorspeed = 0.4;
         try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
             JsonObject jsonObject = reader.readObject();
             factor = jsonObject.getJsonNumber("factor").doubleValue();
@@ -99,12 +87,9 @@ public class MenuSpring {
     }
 
     @PostMapping("/editPreis")
-    public String editPreis(
-            @ModelAttribute PreisDTO preisDTO,
-            Model model) {
+    public String editPreis(@ModelAttribute PreisDTO preisDTO, Model model) {
         BigDecimal preis = edit.recalcpricerun(preisDTO.getFaktor(), preisDTO.getAge(), preisDTO.getSpeed(), vertrage);
-        String confirm = "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + "€ pro Jahr";
-        model.addAttribute("confirm", confirm);
+        model.addAttribute("confirm", "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + "€ pro Jahr");
         return "index";
     }
 
@@ -128,56 +113,46 @@ public class MenuSpring {
             int PLZ = Integer.parseInt(vertragdto.getPlz());
             Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), PLZ, vertragdto.getStadt(), vertragdto.getBundesland());
             Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
-            double preis = creator.createPreis(monatlich, partner, fahrzeug);
+            double preis = create.createPreis(monatlich, partner, fahrzeug);
             response.put("preis", String.format(Locale.GERMANY, "%.2f €", preis));
         } else {
-            response.put("preis", "--,--" + " €");
+            response.put("preis", "--,-- €");
         }
         return response;
     }
 
     @PostMapping("/showEdit")
-    public String editVertrag(
-            @ModelAttribute VertragDTO vertragdto,
-            Model model) {
+    public String editVertrag(@ModelAttribute VertragDTO vertragdto, Model model) {
         vertragsverwaltung.vertragLoeschen(vsnr);
         boolean monatlich = Objects.equals(vertragdto.getAbrechnung(), "true");
         int plzint = Integer.parseInt(vertragdto.getPlz());
         Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), plzint, vertragdto.getStadt(), vertragdto.getBundesland());
         Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
-        double preis = creator.createPreis(monatlich, partner, fahrzeug);
+        double preis = create.createPreis(monatlich, partner, fahrzeug);
         Vertrag vertrag = new Vertrag(vsnr, monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
         vertragsverwaltung.vertragAnlegen(vertrag);
-
-        String confirm = "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(preis).replace('.', ',') + "€";
-        model.addAttribute("confirm", confirm);
+        model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(preis).replace('.', ',') + "€");
         return "index";
     }
 
     @PostMapping("/createVertrag")
-    public String createVertrag(
-            @ModelAttribute VertragDTO vertragdto,
-            Model model) {
-
+    public String createVertrag(@ModelAttribute VertragDTO vertragdto, Model model) {
         boolean monatlich = Objects.equals(vertragdto.getAbrechnung(), "true");
         int plzint = Integer.parseInt(vertragdto.getPlz());
         int vsnr = create.createvsnr();
         Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), plzint, vertragdto.getStadt(), vertragdto.getBundesland());
         Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
-        double preis = creator.createPreis(monatlich, partner, fahrzeug);
+        double preis = create.createPreis(monatlich, partner, fahrzeug);
         Vertrag vertrag = new Vertrag(vsnr, monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
         vertragsverwaltung.vertragAnlegen(vertrag);
-
-        String confirm = "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + String.valueOf(preis).replace('.', ',') + "€";
-        model.addAttribute("confirm", confirm);
+        model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + String.valueOf(preis).replace('.', ',') + "€");
         return "index";
     }
 
     @PostMapping("/showDelete")
     public String deleteVertrag(Model model) {
         vertragsverwaltung.vertragLoeschen(vsnr);
-        String confirm = "Vertrag erfolgreich gelöscht!";
-        model.addAttribute("confirm", confirm);
+        model.addAttribute("confirm", "Vertrag erfolgreich gelöscht!");
         return "index";
     }
 
@@ -186,8 +161,7 @@ public class MenuSpring {
         vsnr = VSNR;
         Vertrag v = vertragsverwaltung.getVertrag(VSNR);
         if (v == null) {
-            String result = "Vertrag nicht gefunden!";
-            model.addAttribute("result", result);
+            model.addAttribute("result", "Vertrag nicht gefunden!");
             return "index";
         }
         VertragDTO vertragDTO = new VertragDTO();
@@ -196,11 +170,7 @@ public class MenuSpring {
         model.addAttribute("preis", String.valueOf(v.getPreis()).replace('.', ','));
         model.addAttribute("preisnew", String.valueOf(v.getPreis()).replace('.', ','));
         model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
-        if (v.getMonatlich()) {
-            vertragDTO.setAbrechnung("true");
-        } else {
-            vertragDTO.setAbrechnung("false");
-        }
+        vertragDTO.setAbrechnung(v.getMonatlich() ? "true" : "false");
         model.addAttribute("versicherungsbeginn", v.getVersicherungsbeginn());
         model.addAttribute("versicherungsablauf", v.getVersicherungsablauf());
         model.addAttribute("antragsdatum", v.getAntragsDatum());
@@ -233,7 +203,7 @@ public class MenuSpring {
         vertragDTO.setBundesland(v.getPartner().getBundesland());
         model.addAttribute("land", v.getPartner().getLand());
         vertragDTO.setLand(v.getPartner().getLand());
-        if(v.getVersicherungsablauf().isBefore(LocalDate.now())){
+        if (v.getVersicherungsablauf().isBefore(LocalDate.now())) {
             model.addAttribute("gueltig", "Vertrag abgelaufen!");
         }
         return "handleVertrag";

@@ -1,66 +1,40 @@
-// Funktion, um das heutige Datum im Format YYYY-MM-DD zu erhalten
 function getTodayDate() {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 }
 
 function getMaxBirth() {
     const today = new Date();
-    const year = today.getFullYear() - 100;
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${today.getFullYear() - 100}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 }
 
 function getMinBirth() {
     const today = new Date();
-    const year = today.getFullYear() - 18;
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${today.getFullYear() - 18}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 }
 
 function toggleDelete() {
-    document.getElementById('deleteContainer').style.display = 'block';
-    // Hide the delete button
-    var deleteButton = document.getElementById("delete");
-    if (deleteButton.style.display === "none") {
-        deleteButton.style.display = "inline-block";
-    } else {
-        deleteButton.style.display = "none";
-    }
-    var editButton = document.getElementById("edit");
-    if (editButton.style.display === "none") {
-        editButton.style.display = "inline-block";
-    } else {
-        editButton.style.display = "none";
-    }
+    const deleteContainer = document.getElementById('deleteContainer');
+    const deleteButton = document.getElementById("delete");
+    const editButton = document.getElementById("edit");
+    deleteContainer.style.display = 'block';
+    deleteButton.style.display = deleteButton.style.display === "none" ? "inline-block" : "none";
+    editButton.style.display = editButton.style.display === "none" ? "inline-block" : "none";
 }
 
 function hideDelete() {
-    document.getElementById('deleteContainer').style.display = 'none';
-    var deleteButton = document.getElementById("delete");
-    if (deleteButton.style.display === "inline-block") {
-        deleteButton.style.display = "none";
-    } else {
-        deleteButton.style.display = "inline-block";
-    }
-    var editButton = document.getElementById("edit");
-    if (editButton.style.display === "inline-block") {
-        editButton.style.display = "none";
-    } else {
-        editButton.style.display = "inline-block";
-    }
+    const deleteContainer = document.getElementById('deleteContainer');
+    const deleteButton = document.getElementById("delete");
+    const editButton = document.getElementById("edit");
+    deleteContainer.style.display = 'none';
+    deleteButton.style.display = deleteButton.style.display === "inline-block" ? "none" : "inline-block";
+    editButton.style.display = editButton.style.display === "inline-block" ? "none" : "inline-block";
 }
 
-// Setze das heutige Datum als Wert und Mindestdatum für das Datumseingabefeld
 const todayDate = getTodayDate();
 const minbirth = getMinBirth();
 const maxbirth = getMaxBirth();
-const birthInput = document.getElementById('birth')
+const birthInput = document.getElementById('birth');
 const startInput = document.getElementById('start');
 const endInput = document.getElementById('end');
 const createInput = document.getElementById('create');
@@ -80,90 +54,44 @@ const regexName = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñ�
 const regexTyp = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$/;
 const regexPLZ = /^\d{5}$/;
 const regexHausnummer = /^\d+[a-zA-Z]?$/;
+
 function validateInputHersteller(input) {
     fetch('brands.json')
         .then(response => response.json())
         .then(data => {
-            const brands = data.brands; // Adjust this based on the structure of your JSON file
-            const inputValue = "'" + input.value.trim() + "'";
-            if (brands.includes(inputValue)) {
-                input.classList.remove('invalid');
-                input.classList.add('valid');
-            } else {
-                input.classList.remove('valid');
-                input.classList.add('invalid');
-            }
+            const brands = data.brands;
+            const inputValue = `'${input.value.trim()}'`;
+            input.classList.toggle('invalid', !brands.includes(inputValue));
+            input.classList.toggle('valid', brands.includes(inputValue));
         })
-        .catch(error => {
-            console.error('Error loading brands:', error);
-        });
+        .catch(error => console.error('Error loading brands:', error));
 }
 
 function updatePrice() {
-    fetch('/calculatePrice', {
-        method: 'GET',
-    })
+    fetch('/calculatePrice', { method: 'GET' })
         .then(response => response.json())
-        .then(data => {
-            document.getElementById('preis').innerText = data.price + ' €';
-        })
+        .then(data => document.getElementById('preis').innerText = `${data.price} €`)
         .catch(error => console.error('Error:', error));
 }
 
 function validateInput(input, regex) {
-    if (regex.test(input.value)) {
-        input.classList.remove('invalid');
-        input.classList.add('valid');
-    } else {
-        input.classList.remove('valid');
-        input.classList.add('invalid');
-    }
+    input.classList.toggle('invalid', !regex.test(input.value));
+    input.classList.toggle('valid', regex.test(input.value));
 }
 
-kennzeichenInput.addEventListener('input', function () {
-    checkKennzeichen(kennzeichenInput, regexKennzeichen);
-});
+kennzeichenInput.addEventListener('input', () => checkKennzeichen(kennzeichenInput, regexKennzeichen));
+herstellerInput.addEventListener('input', () => validateInputHersteller(herstellerInput));
+updatePreis.addEventListener('click', updatePrice);
+vornameInput.addEventListener('input', () => validateInput(vornameInput, regexName));
+nachnameInput.addEventListener('input', () => validateInput(nachnameInput, regexName));
+typInput.addEventListener('input', () => validateInput(typInput, regexTyp));
+strasseInput.addEventListener('input', () => validateInput(strasseInput, regexName));
+hausnummerInput.addEventListener('input', () => validateInput(hausnummerInput, regexHausnummer));
+plzInput.addEventListener('input', () => validateInput(plzInput, regexPLZ));
+stadtInput.addEventListener('input', () => validateInput(stadtInput, regexName));
+bundeslandInput.addEventListener('input', () => validateInput(bundeslandInput, regexName));
 
-herstellerInput.addEventListener('input', function () {
-    validateInputHersteller(herstellerInput);
-});
-
-updatePreis.addEventListener('click', function () {
-    updatePrice();
-});
-
-vornameInput.addEventListener('input', function () {
-    validateInput(vornameInput, regexName);
-});
-
-nachnameInput.addEventListener('input', function () {
-    validateInput(nachnameInput, regexName);
-});
-
-typInput.addEventListener('input', function () {
-    validateInput(typInput, regexTyp);
-});
-nachnameInput.addEventListener('input', function () {
-    validateInput(nachnameInput, regexName);
-});
-strasseInput.addEventListener('input', function () {
-    validateInput(strasseInput, regexName);
-});
-hausnummerInput.addEventListener('input', function () {
-    validateInput(hausnummerInput, regexHausnummer);
-});
-plzInput.addEventListener('input', function () {
-    validateInput(plzInput, regexPLZ);
-});
-stadtInput.addEventListener('input', function () {
-    validateInput(stadtInput, regexName);
-});
-bundeslandInput.addEventListener('input', function () {
-    validateInput(bundeslandInput, regexName);
-});
-
-// Event Listener, um die Mindest- und Höchstwerte der anderen Felder basierend auf dem Beginn zu setzen
-startInput.addEventListener('change', function () {
+startInput.addEventListener('change', () => {
     const startDate = startInput.value;
     endInput.min = startDate;
     createInput.max = startDate;
@@ -171,56 +99,34 @@ startInput.addEventListener('change', function () {
 
 function checkKennzeichen(input, regex) {
     if (regex.test(input.value)) {
-        input.classList.remove('invalid');
-        input.classList.add('valid');
         fetch('vertrage.json')
             .then(response => response.json())
             .then(data => {
                 const kennzeichenExists = data.some(vertrag => vertrag.fahrzeug.amtlichesKennzeichen === input.value.trim());
-                if (kennzeichenExists) {
-                    input.classList.remove('valid');
-                    input.classList.add('invalid');
-                } else {
-                    input.classList.remove('invalid');
-                    input.classList.add('valid');
-                }
+                input.classList.toggle('invalid', kennzeichenExists);
+                input.classList.toggle('valid', !kennzeichenExists);
             })
-            .catch(error => {
-                console.error('Error loading vertrage:', error);
-            });
+            .catch(error => console.error('Error loading vertrage:', error));
     } else {
-        input.classList.remove('valid');
         input.classList.add('invalid');
+        input.classList.remove('valid');
     }
 }
 
 function toggleEdit() {
-    var handledVertrag = document.getElementById("handledVertrag");
-    var inputs = handledVertrag.querySelectorAll("input, label, #preiscalc, #kmh");
-    inputs.forEach(function (input) {
-        input.style.display = "inline-block";
-    });
-    var editContainer = document.getElementById("editContainer");
-    editContainer.style.display = "inline-block";
-    var editButton = document.getElementById("edit");
-    editButton.style.display = "none";
-    var deleteButton = document.getElementById("delete");
-    deleteButton.style.display = "none";
+    const handledVertrag = document.getElementById("handledVertrag");
+    const inputs = handledVertrag.querySelectorAll("input, label, #preiscalc, #kmh");
+    inputs.forEach(input => input.style.display = "inline-block");
+    document.getElementById("editContainer").style.display = "inline-block";
+    document.getElementById("edit").style.display = "none";
+    document.getElementById("delete").style.display = "none";
 }
 
 function hideEdit() {
-    var handledVertrag = document.getElementById("handledVertrag");
-    var inputs = handledVertrag.querySelectorAll("#editContainer, input, label, #preiscalc, #kmh");
-    inputs.forEach(function (input) {
-        input.style.display = "none";
-    });
-
-    var editContainer = document.getElementById("editContainer");
-    editContainer.style.display = "none";
-    var deleteButton = document.getElementById("delete");
-    deleteButton.style.display = "inline-block";
-    var editButton = document.getElementById("edit");
-    editButton.style.display = "inline-block";
+    const handledVertrag = document.getElementById("handledVertrag");
+    const inputs = handledVertrag.querySelectorAll("#editContainer, input, label, #preiscalc, #kmh");
+    inputs.forEach(input => input.style.display = "none");
+    document.getElementById("editContainer").style.display = "none";
+    document.getElementById("delete").style.display = "inline-block";
+    document.getElementById("edit").style.display = "inline-block";
 }
-
-// Initiale Einstellung der Mindest- und Höchstwerte basierend auf dem heutigen Datum

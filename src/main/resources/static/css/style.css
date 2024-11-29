@@ -16,7 +16,7 @@
     grid-template-columns: 150px 1fr;
     gap: 60px;
     align-items: center;
-    margin-bottom: 10px; /* Fügt eine Leerzeile nach jedem Eingabefeld hinzu */
+    margin-bottom: 10px;
 }
 
 label {
@@ -26,12 +26,9 @@ label {
 
 input[type="text"],
 input[type="date"],
-input[type="number"] {
-    width: 200px; /* Hier kannst du die Breite anpassen */
-}
-
+input[type="number"],
 button {
-    width: 200px; /* Hier kannst du die Breite anpassen */
+    width: 200px;
 }
 
 .vertrag-details {

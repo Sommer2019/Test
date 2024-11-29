@@ -8,12 +8,11 @@
 </head>
 <body>
 <h1><strong>Vertrag </strong> <span th:if="${vsnr}" th:text="${vsnr}"></span></h1>
-<p></p>
 <form id="myForm" th:action="@{/createVertrag}" th:object="${vertragdto}" th:method="post">
     <input type="submit" id="calculateButton" value="Erstellen">
-    <p></p>
     <h2>Vertragsdaten</h2>
-    <div class="form-group"><label>Preisvorberechnung: </label>
+    <div class="form-group">
+        <label>Preisvorberechnung: </label>
         <button type="button" id="calculatePrice"><p id="preis"> --,-- € </p></button>
     </div>
     <div class="form-group">
@@ -37,7 +36,6 @@
         <label for="create">Antragsdatum:</label>
         <input th:field="*{create}" type="date" id="create" max="9998-12-31" required>
     </div>
-    <p></p>
     <h2>Fahrzeugdaten:</h2>
     <div class="form-group">
         <label for="kennzeichen">Amtliches Kennzeichen:</label>
@@ -62,7 +60,6 @@
         <label for="wkz">Wagnisskennziffer:</label>
         <input th:field="*{wkz}" type="number" id="wkz" min="112" max="112" required>
     </div>
-    <p></p>
     <h2>Partnerdaten:</h2>
     <div class="form-group">
         <label for="vorname">Vorname:</label>
@@ -112,57 +109,61 @@
         <input th:field="*{land}" type="text" id="land" readonly>
     </div>
 </form>
-<p></p>
 <a href="/">
     <button>Zurück</button>
 </a>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
-<script>document.getElementById('calculatePrice').addEventListener('click', function () {
-    var form = document.getElementById('myForm');
-    var formData = new FormData(form);
-    fetch('/createPreis', {method: 'POST', body: formData}).then(response => response.json()).then(data => {
-        document.getElementById('preis').textContent = data.preis;
-    }).catch(error => {
-        console.error('Fehler:', error);
-        alert('Es gab einen Fehler bei der Berechnung des Preises.');
+<script>
+    document.getElementById('calculatePrice').addEventListener('click', function () {
+        var form = document.getElementById('myForm');
+        var formData = new FormData(form);
+        fetch('/createPreis', {method: 'POST', body: formData})
+            .then(response => response.json())
+            .then(data => document.getElementById('preis').textContent = data.preis)
+            .catch(error => {
+                console.error('Fehler:', error);
+                alert('Es gab einen Fehler bei der Berechnung des Preises.');
+            });
     });
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('myForm');
-    const calculateButton = document.getElementById('calculateButton');
-    const preisDiv = document.getElementById('preis');
 
-    calculateButton.addEventListener('click', function () {
-        const formData = new FormData(form);
-        const jsonData = {};
-        formData.forEach((value, key) => {
-            jsonData[key] = value;
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('myForm');
+        const calculateButton = document.getElementById('calculateButton');
+        const preisDiv = document.getElementById('preis');
+
+        calculateButton.addEventListener('click', function () {
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            fetch('/calculatePreis', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => response.json())
+                .then(data => preisDiv.textContent = data.preis)
+                .catch(error => console.error('Error:', error));
         });
 
-        fetch('/calculatePreis', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                preisDiv.textContent = data.preis;
-            })
-            .catch(error => console.error('Error:', error));
+        const todayDate = new Date().toISOString().split('T')[0];
+        const maxBirth = new Date(new Date().setFullYear(new Date().getFullYear() - 100)).toISOString().split('T')[0];
+        const minBirth = new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0];
+
+        document.getElementById('start').value = todayDate;
+        document.getElementById('start').min = todayDate;
+        document.getElementById('birth').min = maxBirth;
+        document.getElementById('birth').value = minBirth;
+        document.getElementById('birth').max = minBirth;
+        document.getElementById('end').min = todayDate;
+        document.getElementById('end').value = todayDate;
+        document.getElementById('create').value = todayDate;
+        document.getElementById('create').max = todayDate;
     });
-});
-startInput.value = todayDate;
-startInput.min = todayDate;
-birthInput.min = maxbirth;
-birthInput.value = minbirth;
-birthInput.max = minbirth;
-endInput.min = todayDate;
-endInput.value = todayDate;
-endInput.min = todayDate;
-createInput.value = todayDate;
-createInput.max = todayDate;
 </script>
 </body>
 </html>

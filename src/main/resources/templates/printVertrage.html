@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Verträge</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 <h1>Verträge</h1>
@@ -13,32 +13,26 @@
 </div>
 <div th:each="vertrag : ${vertrage}">
     <details>
-        <summary><b><strong>Vertrag </strong> <span th:text="${vertrag.vsnr}"></span></b></summary>
-        <p></p>
+        <summary><b>Vertrag <span th:text="${vertrag.vsnr}"></span></b></summary>
         <details open>
             <summary><b>Vertragsdaten</b></summary>
             <div class="vertrag-details">
                 <div><span>Preis:</span><span th:text="${vertrag.formattedPreis} + ' €'"></span></div>
-                <div><span>Abrechnungszeitraum:</span><span
-                        th:text="${vertrag.monatlich ? 'monatlich' : 'jährlich'}"></span></div>
+                <div><span>Abrechnungszeitraum:</span><span th:text="${vertrag.monatlich ? 'monatlich' : 'jährlich'}"></span></div>
                 <div><span>Versicherungsbeginn:</span><span th:text="${vertrag.versicherungsbeginn}"></span></div>
                 <div><span>Versicherungsablauf:</span><span th:text="${vertrag.versicherungsablauf}"></span></div>
                 <div><span>Antragsdatum:</span><span th:text="${vertrag.antragsDatum}"></span></div>
             </div>
-            <p></p>
         </details>
         <details open>
             <summary><b>Fahrzeugdaten:</b></summary>
             <div class="vertrag-details">
-                <div><span>Amtliches Kennzeichen:</span><span th:text="${vertrag.fahrzeug.amtlichesKennzeichen}"></span>
-                </div>
+                <div><span>Amtliches Kennzeichen:</span><span th:text="${vertrag.fahrzeug.amtlichesKennzeichen}"></span></div>
                 <div><span>Hersteller:</span><span th:text="${vertrag.fahrzeug.hersteller}"></span></div>
                 <div><span>Typ:</span><span th:text="${vertrag.fahrzeug.typ}"></span></div>
-                <div><span>Höchstgeschwindigkeit:</span><span
-                        th:text="${vertrag.fahrzeug.hoechstgeschwindigkeit}"></span></div>
+                <div><span>Höchstgeschwindigkeit:</span><span th:text="${vertrag.fahrzeug.hoechstgeschwindigkeit}"></span></div>
                 <div><span>Wagnisskennziffer:</span><span th:text="${vertrag.fahrzeug.wagnisskennziffer}"></span></div>
             </div>
-            <p></p>
         </details>
         <details open>
             <summary><b>Partnerdaten:</b></summary>
@@ -57,9 +51,7 @@
         </details>
         <b style="color: red;" th:if="${vertrag.versicherungsablauf.isBefore(T(java.time.LocalDate).now())}">Vertrag abgelaufen</b>
     </details>
-    <p></p>
 </div>
-<p></p>
 <a href="/">
     <button>Zurück</button>
 </a>
