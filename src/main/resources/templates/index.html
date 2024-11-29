@@ -10,12 +10,14 @@
 <div th:if="${confirm}" th:text="${confirm}"></div>
 <h2>Wähle eine Aktion aus:</h2>
 <h3>Alle Verträge:</h3>
-<a href="/printVertrage">
-    <button>Alle Verträge anzeigen</button>
-</a>
-<p><a href="/editPreis">
-    <button>Preise neu berechnen</button>
-</a></p>
+<div style="display: flex; gap: 10px;">
+    <a href="/printVertrage">
+        <button>Alle Verträge anzeigen</button>
+    </a>
+    <a href="/editPreis">
+        <button>Preise neu berechnen</button>
+    </a>
+</div>
 <h3>Neuer Vertrag</h3>
 <a href="/createVertrag">
     <button>Vertrag erstellen</button>
